@@ -40,6 +40,20 @@ Een React-platform voor participatie, projecten, bezwaren en vergunningen.
 ## Deployment
 Push naar GitHub: `git push`
 
----
+## Deployen op Vercel
 
-> Gemaakt door Marc Smulders Lab
+1. Installeer de Vercel CLI (eenmalig):
+   ```bash
+   npm install -g vercel
+   ```
+2. Login bij Vercel:
+   ```bash
+   vercel login
+   ```
+3. Deploy het project:
+   ```bash
+   vercel
+   ```
+4. Volg de prompts voor project- en buildinstellingen.
+
+De configuratie staat in `vercel.json`.
