@@ -11,12 +11,12 @@ import OpenNormScore from './openNorm/OpenNormScore';
 import Navbar from '../components/Navbar';
 import Bio2Overview from './bio2/Bio2Overview';
 import Bio2Detail from './bio2/Bio2Detail';
-import OsintOverview from './osint/OsintOverview';
-import OsintDetail from './osint/OsintDetail';
-import LcaOverview from './lca/LcaOverview';
-import LcaDetail from './lca/LcaDetail';
-import SlmOverview from './slm/SlmOverview';
-import SlmDetail from './slm/SlmDetail';
+import OsintOverview from '../theme/osint/OsintOverview';
+import OsintDetail from '../theme/osint/OsintDetail';
+import LcaOverview from '../theme/lca/LcaOverview';
+import LcaDetail from '../theme/lca/LcaDetail';
+import SlmOverview from '../theme/slm/SlmOverview';
+import SlmDetail from '../theme/slm/SlmDetail';
 
 export default function AppRouter() {
   return (
