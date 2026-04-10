@@ -1,0 +1,6 @@
+/* Basis styling voor de app, kan uitgebreid worden */
+.main {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #0f172a, #334155, #0e7490);
+  color: #fff;
+}
