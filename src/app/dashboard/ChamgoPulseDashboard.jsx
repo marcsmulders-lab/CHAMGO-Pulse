@@ -1,13 +1,284 @@
-import { useTheme } from '../../theme/ThemeContext';
+
+
 import { useState } from 'react';
 
-export default function ChamgoPulseDashboard() {
-  const { theme } = useTheme();
-  const [active, setActive] = useState(0);
-  const sections = [
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState('gemeente');
+
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 flex items-center justify-center p-6 relative overflow-hidden">
+        <div className="relative z-10 w-full max-w-md bg-white/10 backdrop-blur-2xl rounded-[32px] shadow-2xl border border-white/10 p-8">
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-xl">
+              C
+            </div>
+            <h1 className="text-3xl font-bold text-slate-800">
+              CHAMGO-Pulse
+            </h1>
+            <p className="text-slate-500 mt-2">
+              Meld u aan om toegang te krijgen tot het dashboard
+            </p>
+          </div>
+
+          <div className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Gebruikersnaam
+              </label>
+              <input
+                type="text"
+                placeholder="Voer gebruikersnaam in"
+                className="w-full border border-slate-300 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Wachtwoord
+              </label>
+              <input
+                type="password"
+                placeholder="Voer wachtwoord in"
+                className="w-full border border-slate-300 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Rol
+              </label>
+              <select
+                className="w-full border border-slate-300 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={role}
+                onChange={e => setRole(e.target.value)}
+              >
+                <option value="gemeente">Gemeente</option>
+                <option value="investeerder">Investeerder</option>
+                <option value="beheerder">Beheerder</option>
+                <option value="bouwteam">Bouwteam</option>
+              </select>
+            </div>
+
+            <div className="flex items-center justify-between text-sm">
+              <label className="flex items-center gap-2 text-slate-600">
+                <input type="checkbox" className="rounded" />
+                Onthoud mij
+              </label>
+
+              <button className="text-blue-600 hover:text-blue-700 font-medium">
+                Wachtwoord vergeten?
+              </button>
+            </div>
+
+            <button
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-2xl font-medium shadow-lg transition"
+              onClick={() => setIsLoggedIn(true)}
+            >
+              Inloggen
+            </button>
+          </div>
+
+          <div className="mt-8 border-t border-slate-200 pt-6 text-center text-sm text-slate-500">
+            Alleen toegankelijk voor geautoriseerde gebruikers
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Toon alleen relevante dashboard-secties op basis van de gekozen rol
+  const allSections = [
     {
       title: 'Gemeentelijk Dashboard',
-      color: theme.accent,
+      color: 'bg-blue-600',
+      items: [
+        'Lopende projecten',
+        'Vergunningenstatus',
+        'Zorgvraag per wijk',
+        'Switch Home doorstroming',
+      ],
+      roles: ['gemeente'],
+    },
+    {
+      title: 'Investeerdersportaal',
+      color: 'bg-slate-800',
+      items: [
+        'Projectrendement',
+        'Risicoanalyse',
+        'Due diligence',
+        'Documentdownloads',
+      ],
+      roles: ['investeerder'],
+    },
+    {
+      title: 'Realtime Bouwmonitor',
+      color: 'bg-orange-500',
+      items: [
+        'Bouwplanning',
+        'Materiaalstatus',
+        'Budget vs realisatie',
+        'Foto-updates',
+      ],
+      roles: ['bouwteam', 'beheerder'],
+    },
+    {
+      title: 'Vergunningenoverzicht',
+      color: 'bg-purple-600',
+      items: [
+        'Omgevingsvergunningen',
+        'Bezwaarprocedures',
+        'Deadlines',
+        'Juridische status',
+      ],
+      roles: ['gemeente', 'beheerder'],
+    },
+    {
+      title: 'AI-Control Center',
+      color: 'bg-green-600',
+      items: [
+        'AI meldingen',
+        'Risicoherkenning',
+        'Voorspellingen',
+        'Automatische rapportages',
+      ],
+      roles: ['beheerder', 'gemeente'],
+    },
+  ];
+
+  // Filter secties op basis van rol
+  const sections = allSections.filter(section => section.roles.includes(role));
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+          <div>
+            <h2 className="text-2xl font-bold text-white">Welkom, {username}!</h2>
+            <div className="text-slate-300 mt-1">Ingelogd als: <span className="font-semibold text-blue-400">{role}</span></div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {sections.map((section) => (
+            <div
+              key={section.title}
+              className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 overflow-hidden"
+            >
+              <div className={`${section.color} p-5`}>
+                <h3 className="text-white text-xl font-semibold">
+                  {section.title}
+                </h3>
+              </div>
+              <div className="p-6">
+                <ul className="space-y-3">
+                  {section.items.map((item) => (
+                    <li
+                      key={item}
+                      className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <button className="mt-6 w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-2xl transition">
+                  Open Module
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Statistieken per rol */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-10">
+          {role === 'gemeente' && (
+            <>
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+                <h3 className="text-xl font-semibold text-slate-800 mb-4">Lopende Projecten</h3>
+                <div className="text-5xl font-bold text-blue-600">12</div>
+                <p className="text-slate-500 mt-2">Actieve projecten in behandeling</p>
+              </div>
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+                <h3 className="text-xl font-semibold text-slate-800 mb-4">Vergunningen Open</h3>
+                <div className="text-5xl font-bold text-purple-600">28</div>
+                <p className="text-slate-500 mt-2">Dossiers in procedure</p>
+              </div>
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+                <h3 className="text-xl font-semibold text-slate-800 mb-4">AI Meldingen</h3>
+                <div className="text-5xl font-bold text-green-600">7</div>
+                <p className="text-slate-500 mt-2">Nieuwe waarschuwingen beschikbaar</p>
+              </div>
+            </>
+          )}
+          {role === 'investeerder' && (
+            <>
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+                <h3 className="text-xl font-semibold text-slate-800 mb-4">Projecten</h3>
+                <div className="text-5xl font-bold text-blue-600">5</div>
+                <p className="text-slate-500 mt-2">Projecten met investeringskans</p>
+              </div>
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+                <h3 className="text-xl font-semibold text-slate-800 mb-4">Rendement</h3>
+                <div className="text-5xl font-bold text-green-600">8,2%</div>
+                <p className="text-slate-500 mt-2">Gemiddeld verwacht rendement</p>
+              </div>
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+                <h3 className="text-xl font-semibold text-slate-800 mb-4">Risico's</h3>
+                <div className="text-5xl font-bold text-orange-500">2</div>
+                <p className="text-slate-500 mt-2">Projecten met verhoogd risico</p>
+              </div>
+            </>
+          )}
+          {role === 'beheerder' && (
+            <>
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+                <h3 className="text-xl font-semibold text-slate-800 mb-4">Bouwprojecten</h3>
+                <div className="text-5xl font-bold text-blue-600">9</div>
+                <p className="text-slate-500 mt-2">Projecten in uitvoering</p>
+              </div>
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+                <h3 className="text-xl font-semibold text-slate-800 mb-4">Materiaalstatus</h3>
+                <div className="text-5xl font-bold text-orange-500">3</div>
+                <p className="text-slate-500 mt-2">Projecten met materiaaltekort</p>
+              </div>
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+                <h3 className="text-xl font-semibold text-slate-800 mb-4">AI Rapportages</h3>
+                <div className="text-5xl font-bold text-green-600">4</div>
+                <p className="text-slate-500 mt-2">Nieuwe rapportages beschikbaar</p>
+              </div>
+            </>
+          )}
+          {role === 'bouwteam' && (
+            <>
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+                <h3 className="text-xl font-semibold text-slate-800 mb-4">Bouwplanning</h3>
+                <div className="text-5xl font-bold text-blue-600">6</div>
+                <p className="text-slate-500 mt-2">Actieve bouwprojecten</p>
+              </div>
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+                <h3 className="text-xl font-semibold text-slate-800 mb-4">Foto-updates</h3>
+                <div className="text-5xl font-bold text-purple-600">15</div>
+                <p className="text-slate-500 mt-2">Nieuwe bouwfoto's toegevoegd</p>
+              </div>
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+                <h3 className="text-xl font-semibold text-slate-800 mb-4">Deadlines</h3>
+                <div className="text-5xl font-bold text-orange-500">3</div>
+                <p className="text-slate-500 mt-2">Aankomende deadlines deze maand</p>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+    {
+      title: 'Gemeentelijk Dashboard',
+      color: 'bg-blue-600',
       items: [
         'Lopende projecten',
         'Vergunningenstatus',
@@ -17,7 +288,7 @@ export default function ChamgoPulseDashboard() {
     },
     {
       title: 'Investeerdersportaal',
-      color: theme.primary,
+      color: 'bg-slate-800',
       items: [
         'Projectrendement',
         'Risicoanalyse',
@@ -27,7 +298,7 @@ export default function ChamgoPulseDashboard() {
     },
     {
       title: 'Realtime Bouwmonitor',
-      color: theme.warning,
+      color: 'bg-orange-500',
       items: [
         'Bouwplanning',
         'Materiaalstatus',
@@ -37,7 +308,7 @@ export default function ChamgoPulseDashboard() {
     },
     {
       title: 'Vergunningenoverzicht',
-      color: '#7c3aed', // paars
+      color: 'bg-purple-600',
       items: [
         'Omgevingsvergunningen',
         'Bezwaarprocedures',
@@ -47,7 +318,7 @@ export default function ChamgoPulseDashboard() {
     },
     {
       title: 'AI-Control Center',
-      color: theme.success,
+      color: 'bg-green-600',
       items: [
         'AI meldingen',
         'Risicoherkenning',
@@ -57,153 +328,76 @@ export default function ChamgoPulseDashboard() {
     },
   ];
 
-  const statCards = [
-    {
-      title: 'Lopende Projecten',
-      value: 12,
-      color: theme.accent,
-      text: 'Actieve projecten in behandeling',
-    },
-    {
-      title: 'Vergunningen Open',
-      value: 28,
-      color: '#7c3aed',
-      text: 'Dossiers in procedure',
-    },
-    {
-      title: 'AI Meldingen',
-      value: 7,
-      color: theme.success,
-      text: 'Nieuwe waarschuwingen beschikbaar',
-    },
-  ];
-
   return (
-    <div style={{ minHeight: '100vh', background: theme.background, display: 'flex' }}>
-      {/* Sidebar */}
-      <aside style={{
-        width: 280,
-        background: theme.primary,
-        color: '#fff',
-        padding: '2.5rem 1.5rem',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 32,
-      }}>
+    <div className="min-h-screen bg-slate-950 flex text-white">
+      <aside className="w-72 bg-slate-900/95 border-r border-white/10 backdrop-blur-xl text-white p-6 flex flex-col gap-6">
         <div>
-          <h1 style={{ fontSize: 32, fontWeight: 900, letterSpacing: 1, margin: 0 }}>CHAMGO-Pulse</h1>
-          <p style={{ color: '#cbd5e1', marginTop: 8, fontSize: 15 }}>
+          <h1 className="text-3xl font-bold tracking-tight">CHAMGO-Pulse</h1>
+          <p className="text-slate-400 mt-2 text-sm">
             Dashboard & Control Center
           </p>
         </div>
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 16 }}>
-          {sections.map((s, i) => (
-            <button
-              key={s.title}
-              onClick={() => setActive(i)}
-              style={{
-                textAlign: 'left',
-                padding: '0.9rem 1.2rem',
-                borderRadius: 16,
-                background: active === i ? theme.card : theme.primary,
-                color: active === i ? theme.primary : '#fff',
-                fontWeight: 600,
-                border: 'none',
-                outline: 'none',
-                cursor: 'pointer',
-                transition: 'background 0.2s, color 0.2s',
-                boxShadow: active === i ? '0 2px 12px rgba(16,24,39,0.10)' : 'none',
-              }}
-            >
-              {s.title}
-            </button>
-          ))}
+
+        <nav className="flex flex-col gap-3 text-sm">
+          <button className="text-left px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition">
+            Gemeentelijk Dashboard
+          </button>
+          <button className="text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+            Investeerdersportaal
+          </button>
+          <button className="text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+            Bouwmonitor
+          </button>
+          <button className="text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+            Vergunningen
+          </button>
+          <button className="text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+            AI-Control Center
+          </button>
         </nav>
       </aside>
 
-      {/* Main */}
-      <main style={{ flex: 1, padding: '3rem 3vw' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 40 }}>
+      <main className="flex-1 p-8 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 style={{ fontSize: 38, fontWeight: 800, color: theme.color, margin: 0 }}>Overzicht Modules</h2>
-            <p style={{ color: '#64748B', marginTop: 10, fontSize: 18 }}>
+            <h2 className="text-4xl font-bold text-slate-800">
+              Overzicht Modules
+            </h2>
+            <p className="text-slate-500 mt-2">
               Centrale omgeving voor beleid, bouw, vergunningen en AI-analyse.
             </p>
           </div>
-          <button style={{
-            background: theme.accent,
-            color: '#fff',
-            padding: '0.9rem 2.2rem',
-            borderRadius: 20,
-            fontWeight: 600,
-            fontSize: 17,
-            boxShadow: '0 2px 12px rgba(37,99,235,0.13)',
-            border: 'none',
-            cursor: 'pointer',
-            transition: 'background 0.2s',
-          }}>
+
+          <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-2xl shadow-lg transition font-medium">
             Nieuw Project
           </button>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: 28,
-        }}>
-          {sections.map((section, idx) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {sections.map((section) => (
             <div
               key={section.title}
-              style={{
-                background: theme.card,
-                borderRadius: 28,
-                boxShadow: '0 2px 16px rgba(15,23,42,0.07)',
-                border: `1.5px solid ${theme.border}`,
-                overflow: 'hidden',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: 260,
-              }}
+              className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 overflow-hidden"
             >
-              <div style={{
-                background: section.color,
-                padding: '1.3rem 1.5rem',
-                color: '#fff',
-              }}>
-                <h3 style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>{section.title}</h3>
+              <div className={`${section.color} p-5`}>
+                <h3 className="text-white text-xl font-semibold">
+                  {section.title}
+                </h3>
               </div>
-              <div style={{ padding: '1.5rem' }}>
-                <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  {section.items.map(item => (
+
+              <div className="p-6">
+                <ul className="space-y-3">
+                  {section.items.map((item) => (
                     <li
                       key={item}
-                      style={{
-                        background: '#F1F5F9',
-                        border: '1.5px solid #E2E8F0',
-                        borderRadius: 14,
-                        padding: '0.8rem 1.2rem',
-                        color: '#334155',
-                        fontSize: 16,
-                        margin: 0,
-                      }}
+                      className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700"
                     >
                       {item}
                     </li>
                   ))}
                 </ul>
-                <button style={{
-                  marginTop: 24,
-                  width: '100%',
-                  background: theme.primary,
-                  color: '#fff',
-                  padding: '0.9rem 0',
-                  borderRadius: 18,
-                  fontWeight: 600,
-                  fontSize: 16,
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'background 0.2s',
-                }}>
+
+                <button className="mt-6 w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-2xl transition">
                   Open Module
                 </button>
               </div>
@@ -211,28 +405,30 @@ export default function ChamgoPulseDashboard() {
           ))}
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: 28,
-          marginTop: 48,
-        }}>
-          {statCards.map(card => (
-            <div key={card.title} style={{
-              background: theme.card,
-              borderRadius: 28,
-              boxShadow: '0 2px 16px rgba(15,23,42,0.07)',
-              border: `1.5px solid ${theme.border}`,
-              padding: '2rem',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-            }}>
-              <h3 style={{ fontSize: 22, fontWeight: 700, color: theme.color, marginBottom: 18 }}>{card.title}</h3>
-              <div style={{ fontSize: 48, fontWeight: 900, color: card.color }}>{card.value}</div>
-              <p style={{ color: '#64748B', marginTop: 10, fontSize: 17 }}>{card.text}</p>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-10">
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+            <h3 className="text-xl font-semibold text-slate-800 mb-4">
+              Lopende Projecten
+            </h3>
+            <div className="text-5xl font-bold text-blue-600">12</div>
+            <p className="text-slate-500 mt-2">Actieve projecten in behandeling</p>
+          </div>
+
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+            <h3 className="text-xl font-semibold text-slate-800 mb-4">
+              Vergunningen Open
+            </h3>
+            <div className="text-5xl font-bold text-purple-600">28</div>
+            <p className="text-slate-500 mt-2">Dossiers in procedure</p>
+          </div>
+
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6">
+            <h3 className="text-xl font-semibold text-slate-800 mb-4">
+              AI Meldingen
+            </h3>
+            <div className="text-5xl font-bold text-green-600">7</div>
+            <p className="text-slate-500 mt-2">Nieuwe waarschuwingen beschikbaar</p>
+          </div>
         </div>
       </main>
     </div>

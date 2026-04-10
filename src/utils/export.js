@@ -1,3 +1,7 @@
+
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 // Utility to export array of objects to CSV
 export function exportToCSV(data, filename = 'export.csv') {
   if (!data || !data.length) return;
@@ -19,20 +23,12 @@ export function exportToCSV(data, filename = 'export.csv') {
 }
 
 // Utility to export array of objects to PDF (simple table)
-export async function exportToPDF(data, filename = 'export.pdf') {
+export function exportToPDF(data, filename = 'export.pdf') {
   if (!data || !data.length) return;
-  const jsPDFModule = await import('jspdf');
-  const autoTableModule = await import('jspdf-autotable');
-  const jsPDF = jsPDFModule.jsPDF;
-  // Patch autoTable in op jsPDF prototype
-  if (typeof autoTableModule.default === 'function') {
-    autoTableModule.default(jsPDF);
-  } else if (typeof autoTableModule === 'function') {
-    autoTableModule(jsPDF);
-  }
   const doc = new jsPDF();
-  const headers = [Object.keys(data[0])];
-  const rows = data.map(row => headers[0].map(h => row[h]));
-  doc.autoTable({ head: headers, body: rows });
+  autoTable(doc, {
+    head: [Object.keys(data[0])],
+    body: data.map(row => Object.keys(data[0]).map(h => row[h])),
+  });
   doc.save(filename);
 }
